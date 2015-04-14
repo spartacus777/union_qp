@@ -1,0 +1,43 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light">
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+
+    <style name="Base" >
+    </style>
+
+
+    <style name="CustomTextFlying" parent="Base">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:background">@drawable/textlinesalpha</item>
+        <item name="android:padding">5sp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="CustomText" parent="Base">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:background">@drawable/textlines</item>
+        <item name="android:padding">5sp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="CustomTextComment" parent="Base">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:background">@drawable/textlines</item>
+        <item name="android:padding">5sp</item>
+    </style>
+
+
+</resources>

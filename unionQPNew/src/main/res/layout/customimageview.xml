@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/ivImage"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/back_textview"
+        android:layout_width="60dp"
+        android:layout_height="60dp">
+
+    </ImageView>
+
+    <at.markushi.ui.CircleButton
+        android:layout_alignParentRight="true"
+        android:id="@+id/ibClose"
+        android:src="@drawable/close_button"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:cb_color="@color/pressed"
+        app:cb_pressedRingWidth="20dip"/>
+
+    <at.markushi.ui.CircleButton
+        android:id="@+id/ibShow"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_show"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:cb_color="@color/pressed"
+        app:cb_pressedRingWidth="20dip"/>
+
+
+</RelativeLayout>

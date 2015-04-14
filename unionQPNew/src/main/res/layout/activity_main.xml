@@ -1,0 +1,251 @@
+<ScrollView
+    android:id="@+id/scParent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:scrollbars="none"
+    tools:context="union_qp.com.ua.MainActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+         
+        <RelativeLayout
+            android:id="@+id/slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
+
+        </RelativeLayout>
+     
+     <RelativeLayout
+         android:id="@+id/tableRow1"
+         android:layout_marginTop="-6dp"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" >
+
+         <TextView
+             android:id="@+id/tvGalleryText"
+             android:layout_width="match_parent"
+             android:layout_height="40dp"
+             android:layout_marginTop="20dp"
+             android:background="@drawable/back_textview"
+             android:paddingLeft="90dp"
+             android:gravity="center_vertical"
+             android:text="@string/attach" />
+
+         <at.markushi.ui.CircleButton
+             android:id="@+id/imageView1"
+             android:onClick="onGalleryButtonClick"
+             android:layout_width="80dp"
+             android:layout_height="80dp"
+             android:background="@drawable/button"
+             android:src="@drawable/gallery"
+             app:cb_color="@color/pressed"
+             app:cb_pressedRingWidth="10dip"/>
+
+     </RelativeLayout>
+     
+       <HorizontalScrollView 
+             android:id="@+id/ScrollViewGallery"
+             android:layout_alignTop="@id/tableRow1"
+             android:layout_marginTop="-70dp"
+             android:paddingBottom="5dp"
+             android:layout_marginLeft="90dp"
+             android:layout_width="match_parent"
+             android:layout_height="60dp">
+                
+             <LinearLayout
+	         android:id="@+id/LayoutGallery"
+	         android:orientation="horizontal"
+	         android:layout_width="wrap_content"
+	         android:layout_height="wrap_content" >
+         
+             </LinearLayout>
+             
+         </HorizontalScrollView>
+     
+      <RelativeLayout
+         android:id="@+id/tableRow2"
+         android:layout_marginTop="-6dp"
+         android:layout_below="@id/tableRow1"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" >
+
+         <TextView
+             android:id="@+id/tvGalleryTextPhoto"
+             android:layout_width="match_parent"
+             android:layout_height="40dp"
+             android:layout_marginTop="20dp"
+             android:background="@drawable/back_textview"
+             android:paddingLeft="90dp"
+             android:gravity="center_vertical"
+             android:text="@string/photo" />
+
+         <at.markushi.ui.CircleButton
+             android:id="@+id/imageView121"
+             android:onClick="onPhotoButtonClick"
+             android:layout_width="80dp"
+             android:layout_height="80dp"
+             android:background="@drawable/button"
+             android:src="@drawable/photo"
+             app:cb_color="@color/pressed"
+             app:cb_pressedRingWidth="10dip"/>
+
+     </RelativeLayout>
+     
+       <HorizontalScrollView 
+             android:id="@+id/ScrollViewGallery2"
+             android:layout_alignTop="@id/tableRow2"
+             android:layout_marginTop="-70dp"
+             android:paddingBottom="5dp"
+             android:layout_marginLeft="90dp"
+             android:layout_width="match_parent"
+             android:layout_height="60dp">
+                
+             <LinearLayout
+	         android:id="@+id/LayoutGalleryPhoto"
+	         android:orientation="horizontal"
+	         android:layout_width="wrap_content"
+	         android:layout_height="wrap_content" >
+         
+             </LinearLayout>
+             
+         </HorizontalScrollView>
+     
+     
+       <RelativeLayout
+         android:id="@+id/tableRow3"
+         android:layout_marginTop="-6dp"
+         android:layout_below="@id/tableRow2"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" >
+
+         <TextView
+             android:id="@+id/tvDeadline"
+             android:layout_width="match_parent"
+             android:layout_height="40dp"
+             android:layout_marginTop="20dp"
+             android:background="@drawable/back_textview"
+             android:paddingLeft="90dp"
+             android:gravity="center_vertical"
+             android:text="@string/deadline" />
+
+         <at.markushi.ui.CircleButton
+             android:id="@+id/imageView12"
+             android:onClick="onDeadlinePick"
+             android:layout_width="80dp"
+             android:layout_height="80dp"
+             android:background="@drawable/button"
+             android:src="@drawable/deadline"
+             app:cb_color="@color/pressed"
+             app:cb_pressedRingWidth="10dip"/>
+
+     </RelativeLayout>
+
+       <RelativeLayout
+           android:id="@+id/rlComment"
+           android:layout_marginTop="@dimen/margin_norm"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" >
+
+           <EditText
+               android:id="@+id/etName"
+               android:lines="1"
+               android:singleLine="true"
+               android:ellipsize="end"
+               android:marqueeRepeatLimit ="marquee_forever"
+               android:focusable="true"
+               android:focusableInTouchMode="true"
+               android:scrollHorizontally="true"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:maxLines="1"
+               style="@style/CustomText"
+               android:hint="@string/name"
+               android:inputType="textPersonName" >
+           </EditText>
+
+           <EditText
+               android:id="@+id/etPhone"
+               android:lines="1"
+               android:singleLine="true"
+               android:ellipsize="end"
+               android:marqueeRepeatLimit ="marquee_forever"
+               android:focusable="true"
+               android:layout_marginTop="@dimen/margin_norm"
+               android:focusableInTouchMode="true"
+               android:scrollHorizontally="true"
+               android:layout_below="@id/etName"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               style="@style/CustomText"
+               android:hint="@string/your_phone"
+               android:inputType="phone" >
+           </EditText>
+
+           <EditText
+               android:id="@+id/etComment"
+               android:layout_below="@id/etPhone"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:minLines="2"
+               android:layout_marginTop="@dimen/margin_norm"
+               style="@style/CustomTextComment"
+               android:hint="@string/comment"
+               android:inputType="textMultiLine" >
+               
+           </EditText>
+
+       </RelativeLayout>
+       
+       
+        <RelativeLayout
+         android:id="@+id/tableRow5"
+         android:layout_marginTop="-6dp"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" >
+
+         <TextView
+             android:id="@+id/tvSendInfo"
+             android:layout_width="match_parent"
+             android:layout_height="40dp"
+             android:layout_marginTop="20dp"
+             android:background="@drawable/back_textview"
+             android:paddingRight="90dp"
+             android:paddingLeft="10dp"
+             android:textStyle="bold"
+             android:gravity="center_vertical"
+             android:text="@string/arhive_and_send" />
+
+         <at.markushi.ui.CircleButton
+             android:id="@+id/ibSend"
+             android:onClick="onSend"
+             android:layout_width="80dp"
+             android:layout_height="80dp"
+             android:layout_alignParentRight="true"
+             android:background="@drawable/button"
+             android:src="@drawable/arhive"
+             app:cb_color="@color/pressed"
+             app:cb_pressedRingWidth="10dip"/>
+         
+         <ProgressBar
+            android:id="@+id/pb"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_marginTop="20dp"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_marginRight="90dp"
+            android:layout_height="40dp" />
+
+     </RelativeLayout>
+
+       </LinearLayout>
+</ScrollView>

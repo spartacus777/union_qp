@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="red">#db0400</color>
+    <color name="red_pressed">#b00704</color>
+    <color name="white">#ffffff</color>
+    <color name="red_pressed_opacity">#15b00704</color>
+
+    <color name="backgroundColor">@color/white</color>
+
+
+    <color name="popup_pressed">@color/red_pressed_opacity</color>
+    <color name="popup_normal">@color/white</color>
+
+    <color name="black">#000000</color>
+
+    <color name="ab_pressed">#7Fbdbdbd</color>
+    <color name="ab_normal">@android:color/transparent</color>
+    <color name="menu_back">#efefef</color>
+    <color name="pressed">#c5c5c5</color>
+
+
+</resources>

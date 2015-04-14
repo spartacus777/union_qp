@@ -1,0 +1,4 @@
+include ':unionQPNew'
+
+include ':aKLib'
+project(':aKLib').projectDir=new File('../../TaxiPlus/aKLib')

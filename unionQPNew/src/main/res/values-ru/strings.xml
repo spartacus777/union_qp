@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name_launcher">Помощь на КР</string>
+        <string name="app_name">Получить помощь</string>
+        <string name="hello_world">Здравствуй, мир!</string>
+        <string name="action_settings">Settings</string>
+        <string name="attach">Нажмите, чтобы прикрепить изображение/документ</string>
+        <string name="photo">Нажмите, чтобы сделать фото и прикрепить материалы</string>
+        <string name="zakaz">Решить задание!</string>
+        <string name="online">Онлайн-помощь!</string>
+        <string name="deadline">Введите крайний срок сдачи вашего задания</string>
+        <string name="choose_file">Выберите файл:</string>
+        <string name="no_photo">Изображение не выбрано</string>
+        <string name="past_date">Вы выбрали прошедшую дату!</string>
+        <string name="deadline_word">Окончательный срок сдачи</string>
+        <string name="comment">Комментарии к заданию</string>
+        <string name="comment_to_online">Комментарии  к заданию, точное время требуемой онлайн-помощи</string>
+        <string name="name">Ваше имя: </string>
+        <string name="arhive_and_send">Архивировать и отправить!</string>
+        <string name="your_name">Имя</string>
+        <string name="your_comment">Комментарии к заданию</string>
+        <string name="your_phone">Номер телефона</string>
+        <string name="mail_title">Заказ из мобильного приложения</string>
+        <string name="your_deadline">Окончательный срок сдачи</string>
+        <string name="enter_name">Введите ваше имя, пожалуйста!</string>
+        <string name="proper_phone_needed">Введите правильный номер телефона, пожалуйста</string>
+        <string name="info_title">О приложении</string>
+        <string name="info_message">С помощью этого приложения вы сможете заказать решение любых заданий по математике, программированию, физике, 
+            экономике и многим другим университетским дисциплинам.\n\n Также, можно отправить предзаказ онлайн-помощи на контрольной работе. Как это работает?
+             Вы отправляете нам тему и примеры задач - мы оцениваем стоимость предстоящей контрольной. Оплатив половину стоимости, вы присылаете нам работу в 
+             начале пары. В течении 30-60 минут, вы получаете готовое решение вашего задания!\n </string>
+        <string name="info_button">Ok!</string>
+        <string name="no_file">Файл не может быть сжатым</string>
+        <string name="work_type">Вид работы</string>
+    <string name="title_activity_image_view">Редактировать</string>
+</resources>
