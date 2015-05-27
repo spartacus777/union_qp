@@ -8,6 +8,13 @@
         android:actionViewClass="android.widget.Spinner" />
 
     <item
+        android:id="@+id/sizeSelector"
+        android:showAsAction="always"
+        android:orderInCategory="3"
+        android:title="color"
+        android:actionViewClass="android.widget.Spinner" />
+
+    <item
         android:id="@+id/ok"
         android:icon="@drawable/ok"
         android:title="info"

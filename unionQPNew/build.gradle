@@ -6,6 +6,8 @@ android {
 
     defaultConfig {
         applicationId "union_qp.com.ua"
+        versionCode 7
+        versionName "2.1"
         minSdkVersion 15
         targetSdkVersion 21
     }

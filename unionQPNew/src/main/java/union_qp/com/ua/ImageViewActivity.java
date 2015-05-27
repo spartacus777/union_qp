@@ -5,24 +5,26 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
@@ -31,51 +33,35 @@ import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 import anton.kizema.libs.image.ImageConverter;
 import union_qp.com.ua.view.ColorSpinnerAdapter;
+import union_qp.com.ua.view.MySurfaceView;
 
 
-public class ImageViewActivity extends Activity implements View.OnClickListener {
+public class ImageViewActivity extends Activity {
 
+    private static final int ACTION_BTN_SIZE = 80;
     public static final String PATH = "PATH";
+
+    private final String[] values = {"1", "2", "3", "4", "5", "6", "7", "8"};
+
+    private ViewGroup parent;
+    private MenuItem okMenuBtn, colorSelector, sizeSelector;
+    private SubActionButton subBtnEdit, subBtnSelect, subBtnSelectSquare;
+    private FloatingActionMenu actionMenu;
+    private FloatingActionButton actionButton;
+
+    MySurfaceView svImage;
 
     private String path;
 
-    private TextView tvAddText, tvSelect;
-
-    private ViewGroup parent;
-
-    MenuItem okMenuBtn, colorSelector;
-    File imgFile;
-    ImageView myImage;
     int color;
-    boolean isDisabled = false;
+    int size;
 
     boolean isSelectionMode = false;
-    private List<Vector2i> points;
 
     private EditText editableTv;
-
-    Paint paint;
-    int actionBarHeight;
-
-    private class Vector2i{
-        float x;
-        float y;
-
-        Vector2i(){
-            x=0;
-            y=0;
-        }
-
-        Vector2i(float x, float y){
-            this.x = x;
-            this.y = y;
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,86 +73,204 @@ public class ImageViewActivity extends Activity implements View.OnClickListener 
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        TypedValue tv = new TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)){
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
-        }
-
+        initMySurfaceView();
         parent = (ViewGroup) findViewById(R.id.parent);
-
-        tvSelect = (TextView) findViewById(R.id.tvSelect);
-        tvSelect.setOnClickListener(this);
-
-        tvAddText = (TextView) findViewById(R.id.tvAddText);
-        tvAddText.setOnClickListener(this);
-
-        myImage = (ImageView) findViewById(R.id.ivImage);
-
-        path = getIntent().getStringExtra(PATH);
-        imgFile = new File(path);
-
-        if (imgFile.exists()) {
-            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            myImage.setImageBitmap(myBitmap);
-        }
 
         initFloatingBtn();
     }
 
+    private void initMySurfaceView(){
+        svImage = (MySurfaceView) findViewById(R.id.svImage);
+        svImage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                int w = svImage.getWidth();
+                int h = svImage.getHeight();
+
+                Log.d("ANT", "w:"+w+", h:"+h);
+
+                path = getIntent().getStringExtra(PATH);
+                Bitmap b = getBitmap(path, w, h);
+                if (b == null){
+                    Log.d("ANT", "bimap == null");
+                }
+                svImage.setImage(b);
+
+                if (android.os.Build.VERSION.SDK_INT >= 16) {
+                    svImage.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    svImage.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
+    }
+
+    private Bitmap getBitmap(String path, int w, int h){
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
+        return Bitmap.createScaledBitmap(bitmap, w, h, true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        svImage.onPauseMySurfaceView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        svImage.onResumeMySurfaceView();
+    }
+
     private void initFloatingBtn(){
         ImageView icon = new ImageView(this); // Create an icon
-        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+        icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_pencil));
 
-        FloatingActionButton actionButton = new FloatingActionButton.Builder(this)
+        actionButton = new FloatingActionButton.Builder(this)
                 .setContentView(icon)
                 .build();
 
-        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
-        ImageView itemIcon = new ImageView(this);
-        itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_edittext));
-        SubActionButton button1 = itemBuilder.setContentView(itemIcon).build();
+        subBtnEdit = getSubActionButton(R.drawable.ic_edittext, "Text", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onTextPressed();
+            }
+        });
 
-        SubActionButton.Builder itemBuilder1 = new SubActionButton.Builder(this);
-        ImageView itemIcon1 = new ImageView(this);
-        itemIcon1.setImageDrawable(getResources().getDrawable(R.drawable.ic_select));
-        SubActionButton button2 = itemBuilder1.setContentView(itemIcon1).build();
+        subBtnSelect = getSubActionButton(R.drawable.ic_pencil, "Draw", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDrawPressed();
+            }
+        });
 
-        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
-                .addSubActionView(button1)
-                .addSubActionView(button2)
+        subBtnSelectSquare = getSubActionButton(R.drawable.ic_select, "Select", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSelectPressed();
+            }
+        });
+
+        actionMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(subBtnEdit)
+                .addSubActionView(subBtnSelect)
+                .addSubActionView(subBtnSelectSquare)
                 .attachTo(actionButton)
                 .build();
+    }
 
+    private SubActionButton getSubActionButton(int imageId, String text, View.OnClickListener listener){
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+        View v = getMenuItem(imageId, text);
+        SubActionButton sub =  itemBuilder.setContentView(v).build();
+        sub.setOnClickListener(listener);
+        sub.setLayoutParams(new ViewGroup.LayoutParams(App.getPixel(ACTION_BTN_SIZE), App.getPixel(ACTION_BTN_SIZE)));
+        return sub;
+    }
+
+    private View getMenuItem(int imageId, String text){
+        LayoutInflater inflater = getLayoutInflater();
+        View parent = inflater.inflate(R.layout.menu_item, null);
+        ImageView iv = (ImageView) parent.findViewById(R.id.ivImage);
+        iv.setImageDrawable(getResources().getDrawable(imageId));
+
+        TextView tv = (TextView) parent.findViewById(R.id.tvText);
+        tv.setText(text);
+
+        return parent;
+    }
+
+    private void onSelectPressed(){
+        actionMenu.close(true);
+        actionButton.setEnabled(false);
+        showHideActionBarMenu(true);
+
+        svImage.setMode(MySurfaceView.Mode.SELECT);
+    }
+
+    private void onTextPressed(){
+        actionMenu.close(true);
+        actionButton.setEnabled(false);
+        showHideActionBarMenu(true);
+
+        cretaeEditableTextView();
+        editableTv.setTextColor(color);
+        editableTv.setTextSize(size*2 - 10 + getResources().getDimension(R.dimen.text_size));
+    }
+
+    private void onDrawPressed(){
+        actionMenu.close(true);
+        actionButton.setEnabled(false);
+        showHideActionBarMenu(true);
+
+        svImage.setMode(MySurfaceView.Mode.DRAW);
     }
 
     @Override
     public void onBackPressed() {
-        if (isDisabled){
+        if (!actionButton.isEnabled()){
             if (isSelectionMode){
 
             } else {
                 parent.removeView(editableTv);
             }
-            showHideMenu(false);
-            disable(false);
+            showHideActionBarMenu(false);
+            actionButton.setEnabled(true);
             return;
         }
+
+        save();
+        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
         super.onBackPressed();
     }
 
-    private void showHideMenu(boolean show){
+    private void showHideActionBarMenu(boolean show){
         okMenuBtn.setVisible(show);
         colorSelector.setVisible(show);
+        sizeSelector.setVisible(show);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_image_view, menu);
         okMenuBtn = menu.findItem(R.id.ok);
-
         colorSelector = menu.findItem(R.id.colorSelector);
-        showHideMenu(false);
+        sizeSelector = menu.findItem(R.id.sizeSelector);
 
+        showHideActionBarMenu(false);
+
+        initColorSlider();
+        initSizeSlider();
+
+
+        return true;
+    }
+
+    private void initSizeSlider(){
+        Spinner spinner = (Spinner) sizeSelector.getActionView();
+        spinner.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.simple_list_item_1, android.R.id.text1, values);
+        spinner.setAdapter(adapter);
+        spinner.setSelection(4);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                size = Integer.parseInt(values[arg2]);
+                svImage.setSize(size);
+                if (editableTv != null) {
+                    editableTv.setTextSize(size*2 - 10 + getResources().getDimension(R.dimen.text_size));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {}
+        });
+    }
+
+    private void initColorSlider(){
         Spinner spinner = (Spinner) colorSelector.getActionView();
         spinner.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         final ColorSpinnerAdapter adapter = new ColorSpinnerAdapter(this);
@@ -182,15 +286,16 @@ public class ImageViewActivity extends Activity implements View.OnClickListener 
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                 color = adapter.colors[arg2];
                 if (!isSelectionMode) {
-                    editableTv.setTextColor(color);
+                    if (editableTv != null) {
+                        editableTv.setTextColor(color);
+                    }
+                    svImage.setColor(color);
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {}
         });
-
-        return true;
     }
 
     @Override
@@ -203,65 +308,33 @@ public class ImageViewActivity extends Activity implements View.OnClickListener 
         }
 
         if (id == R.id.ok) {
-            showHideMenu(false);
-            disable(false);
+            showHideActionBarMenu(false);
+            actionMenu.open(true);
+            actionButton.setEnabled(true);
 
-            if (isSelectionMode){
-                paint.setStrokeWidth(App.getPixel(4));
-                isSelectionMode = false;
-
-                FileOutputStream fo = null;
-                try {
-                    fo = new FileOutputStream(imgFile);
-                    fo.write(ImageConverter.bitmapToBite(newImage));
-                    fo.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                return true;
+            if (svImage.getMode() == MySurfaceView.Mode.DRAW) {
+                svImage.setMode(MySurfaceView.Mode.NONE);
+            } else if(svImage.getMode() == MySurfaceView.Mode.SELECT) {
+                svImage.setMode(MySurfaceView.Mode.NONE);
+            } else{
+                //text printed
+                svImage.drawText(editableTv);
+                parent.removeView(editableTv);
             }
-
-            Bitmap bm = drawableToBitmap(myImage.getDrawable());
-            Bitmap.Config config = bm.getConfig();
-            int width = bm.getWidth();
-            int height = bm.getHeight();
-
-            Bitmap newImage = Bitmap.createBitmap(width, height, config);
-
-            Canvas c = new Canvas(newImage);
-            c.drawBitmap(bm, 0, 0, null);
-
-            Log.d("ANT", "editableTv.getText() " + editableTv.getText().toString());
-
-            paint = new Paint();
-            paint.setTextSize(App.getPixel(16));
-            paint.setColor(color);
-//        paint.setStrokeWidth(App.getPixel(4));
-            paint.setAntiAlias(true);
-            paint.setFilterBitmap(true);
-            paint.setDither(true);
-
-            editableTv.clearFocus();
-            c.drawText(editableTv.getText().toString(), editableTv.getX() * myImage.getDrawable().getIntrinsicWidth() / myImage.getWidth(),
-                    editableTv.getY() * myImage.getDrawable().getIntrinsicHeight() / myImage.getHeight(), paint);
-
-            myImage.setImageBitmap(newImage);
-
-            FileOutputStream fo = null;
-            try {
-                fo = new FileOutputStream(imgFile);
-                fo.write(ImageConverter.bitmapToBite(newImage));
-                fo.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            parent.removeView(editableTv);
-            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void save(){
+        FileOutputStream fo = null;
+        try {
+            fo = new FileOutputStream(new File(path));
+            fo.write(ImageConverter.bitmapToBite(svImage.getDrawingBitmap()));
+            fo.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Bitmap loadBitmapFromView(View v, int width, int height) {
@@ -285,101 +358,19 @@ public class ImageViewActivity extends Activity implements View.OnClickListener 
         return bitmap;
     }
 
-    Vector2i downPoint;
-    Bitmap newImage;
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (isSelectionMode){
-            if (event.getAction() == MotionEvent.ACTION_DOWN){
-                Log.d("ANT", "writingasdfesfwerf");
-                Vector2i p = new Vector2i( ( event.getRawX() ),
-                        ( event.getRawY() - actionBarHeight));
-
-                points.add(p);
-
-                downPoint = new Vector2i(p.x, p.y);
-
-                return true;
-            } else {
-                Vector2i p = new Vector2i( ( event.getRawX() ),
-                        ( event.getRawY() - actionBarHeight));
-
-                points.add(p);
-
-                Bitmap bm = drawableToBitmap(myImage.getDrawable());
-                Bitmap.Config config = bm.getConfig();
-                int width = bm.getWidth();
-                int height = bm.getHeight();
-
-                newImage = Bitmap.createBitmap(width, height, config);
-
-                Canvas c = new Canvas(newImage);
-                c.drawBitmap(bm, 0, 0, null);
-
-                paint = new Paint();
-                paint.setColor(color);
-                paint.setStrokeWidth(App.getPixel(4));
-                paint.setAntiAlias(true);
-                paint.setFilterBitmap(true);
-                paint.setDither(true);
-                c.drawLine(p.x, p.y, downPoint.x, downPoint.y, paint);
-                downPoint = p;
-
-                myImage.setImageBitmap(newImage);
-
-                return true;
-            }
-
-        }
-
-        return super.onTouchEvent(event);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (isDisabled) {
-            return;
-        }
-
-        switch (v.getId()) {
-            case R.id.tvAddText:
-                createTextView();
-                disable(true);
-                break;
-            case R.id.tvSelect:
-                points = new LinkedList<Vector2i>();
-                showHideMenu(true);
-                isSelectionMode = true;
-                disable(true);
-                break;
-        }
-    }
-
-    private void disable(boolean f) {
-        tvAddText.setEnabled(!f);
-        tvSelect.setEnabled(!f);
-        isDisabled = f;
-    }
-
-
-    private void createTextView() {
-        showHideMenu(true);
-
-        ViewGroup group = (ViewGroup) this.getLayoutInflater().inflate(R.layout.c_edittext, parent);
-        EditText tv = (EditText) group.findViewById(R.id.etEditTExt);
-        group.removeView(tv);
+    private void cretaeEditableTextView() {
+        ViewGroup group = (ViewGroup) getLayoutInflater().inflate(R.layout.c_edittext, parent);
+        EditText editText = (EditText) group.findViewById(R.id.etEditTExt);
+        group.removeView(editText);
         group = null;
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, App.getPixel(30));
-        tv.setLayoutParams(params);
-        editableTv = tv;
-        initET(tv);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        editText.setLayoutParams(params);
+        editableTv = editText;
+        editableTv.setTextSize(getResources().getDimension(R.dimen.text_size));
+        editText.setOnTouchListener(new MyTouchListener());
 
-        parent.addView(tv);
-    }
-
-    private void initET(EditText et) {
-        et.setOnTouchListener(new MyTouchListener());
+        parent.addView(editText);
     }
 
     private final class MyTouchListener implements View.OnTouchListener {
